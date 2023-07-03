@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Color Game</title>
+    <style>
+        #color-game body {
+            background-color: #232323;
+            font-family: "Montserrat";
+            font-size: 62.5%;
+            margin: 0;
+        }
+
+
+        #color-game .meaw {
+            max-width: 600px;
+            margin: 0 auto;
+            padding-top: 20px;
+
+        }
+
+        #color-game .square {
+            width: 30%;
+            background-color: #08D665;
+            padding-bottom: 30%;
+            float: left;
+            margin: 1.66%;
+            transition: background .3s;
+            -webkit-transition: background .3s;
+            -moz-transition: background .3s;
+            o-transition: background .3s;
+        }
+
+        #color-game h1 {
+            color: white;
+            font-size: 2em;
+            text-align: center;
+            font-family: "Montserrat";
+            text-transform: uppercase;
+            padding: 10px 0;
+        }
+
+        #color-game #color-display {
+            display: block;
+            font-size: 2em;
+        }
+
+        #color-game #stripe {
+            height: 30px;
+            text-align: center;
+            color: black;
+        }
+
+        #color-game #message {
+            text-transform: uppercase;
+            color: white;
+            background-color: #08D665;
+
+            font-family: "Montserrat";
+
+            font-size: 1.5em;
+            display: inline-block;
+            width: 20%;
+        }
+
+        #color-game button {
+            outline: none;
+            color: #08D665;
+            font-family: "Montserrat";
+            text-transform: uppercase;
+            font-size: 1.5em;
+            background-color: white;
+            height: 100%;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+            -webkit-transition: all 0.3s;
+            -moz-transition: all 0.3s;
+            o-transition: all 0.3s;
+        }
+
+        #color-game button:hover {
+            background-color: #08D665;
+            color: white;
+        }
+
+        #color-game .selected {
+            background-color: #08D665;
+            color: white;
+        }
+
+        #color-game .square {
+            border-radius: 20%;
+        }
+
+        #color-game * {
+            border: 0px solid red;
+        }
+    </style>
+</head>
+
+<body id="color-game">
+    <h1>Tash's <span id="color-display">RGB</span> Guessing Game</h1>
+    <div id="stripe">
+        <button id="reset">New Colors</button>
+        <span id="message"></span>
+        <button class="mode">Easy</button>
+        <button class="mode selected">Hard</button>
+    </div>
+    <div class="meaw">
+        <div class="square"></div>
+        <div class="square"></div>
+        <div class="square"></div>
+        <div class="square"></div>
+        <div class="square"></div>
+        <div class="square"></div>
+    </div>
+
+    <script type="text/javascript">
+        var numSquares = 6;
+        var colors = [];
+        var pickedColor;
+
+        var squares = document.querySelectorAll(".square");
+        var colorDisplay = document.querySelector("#color-display");
+        var messageDisplay = document.querySelector("#message");
+        var h1 = document.querySelector("h1");
+        var resetButton = document.querySelector("#reset");
+        var modeButtons = document.querySelectorAll(".mode");
+
+        init();
+
+
+        function init() {
+            colorDisplay.textContent = pickedColor;
+            setupSquares();
+            setupMode();
+            reset();
+        }
+
+        resetButton.addEventListener("click", function () {
+            reset();
+        });
+
+        function setupSquares() {
+            for (var i = 0; i < squares.length; i++) {
+                squares[i].style.backgroundColor = colors[i];
+                squares[i].addEventListener("click", function () {
+                    var clickedColor = this.style.backgroundColor;
+                    if (clickedColor === pickedColor) {
+                        messageDisplay.textContent = "Correct";
+                        resetButton.textContent = "Play Again";
+                        changeColors(pickedColor);
+                    }
+                    else {
+                        this.style.backgroundColor = "#232323";
+                        messageDisplay.textContent = "try again";
+                    }
+                });
+            }
+        }
+
+        function setupMode() {
+            for (var i = 0; i < modeButtons.length; i++) {
+                modeButtons[i].addEventListener("click", function () {
+                    for (var i = 0; i < modeButtons.length; i++) {
+                        modeButtons[i].classList.remove("selected");
+                    }
+                    this.classList.add("selected");
+                    if (this.textContent === "Easy") {
+                        numSquares = 3;
+                    }
+                    else {
+                        numSquares = 6;
+                    }
+                    reset();
+                });
+            }
+        }
+
+        function reset() {
+            colors = genRandomColors(numSquares);
+            pickedColor = chooseColor();
+            colorDisplay.textContent = pickedColor;
+            h1.style.backgroundColor = "#2C8E99";
+            resetButton.textContent = "New Colors";
+            messageDisplay.textContent = "";
+            for (var i = 0; i < squares.length; i++) {
+                if (colors[i]) {
+                    squares[i].style.display = "block";
+                    squares[i].style.backgroundColor = colors[i];
+                }
+                else {
+                    squares[i].style.display = "none";
+                }
+            }
+        }
+
+        function changeColors(color) {
+            for (var i = 0; i < squares.length; i++) {
+                squares[i].style.backgroundColor = color;
+                h1.style.backgroundColor = color;
+            }
+        }
+
+        function chooseColor() {
+            var random = Math.floor(Math.random() * colors.length);
+            return colors[random];
+        }
+
+        function genRandomColors(num) {
+            var arr = [];
+            for (var i = 0; i < num; i++) {
+                arr.push(makeColor());
+            }
+            return arr;
+        }
+
+        function makeColor() {
+            var r = Math.floor(Math.random() * 256);
+            var g = Math.floor(Math.random() * 256);
+            var b = Math.floor(Math.random() * 256);
+            return "rgb(" + r + ", " + g + ", " + b + ")";
+        }
+
+    </script>
+</body>
+
+</html>
